@@ -1,5 +1,6 @@
+import JSBlake2s from "js-blake2s";
 var Redstone=Redstone||(function () {
-
+    const blake2s = new JSBlake2s();
     //Accessible only here
     var privateArray=[];
  
@@ -19,11 +20,11 @@ var Redstone=Redstone||(function () {
            payload,
            nonce,
            pow,
-           signature,
-           hash
+           signature
+           //hash
        ){
         let Transaction = {
-            hash: hash,
+            hash: "",
             sender: sender,
             reciver: reciver,
             amount: amount,
@@ -33,6 +34,7 @@ var Redstone=Redstone||(function () {
             pow: pow, // Spam protection PoW
             signature: signature // Signature of the transaction,
         };  
+        Transaction.hash = blake2s.digest(Transaction);
         // make the transaction to json and send post req to url
         const options = {
             method: 'POST',

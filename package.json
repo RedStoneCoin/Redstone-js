@@ -1,0 +1,22 @@
+{
+  "name": "redstone-js",
+  "version": "0.0.1",
+  "description": "Redstone javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RedStoneCoin/Redstone-js.git"
+  },
+  "keywords": [
+    "Redstone-Js"
+  ],
+  "author": "Redstone developers",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RedStoneCoin/Redstone-js/issues"
+  },
+  "homepage": "https://github.com/RedStoneCoin/Redstone-js#readme"
+}
