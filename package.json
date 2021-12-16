@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "Redstone javascript",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "test"
   },
@@ -21,6 +20,8 @@
   },
   "homepage": "https://github.com/RedStoneCoin/Redstone-js#readme",
   "dependencies": {
-    "blakejs": "^1.1.1"
+    "@enumatech/secp256k1-js": "^1.0.0",
+    "blakejs": "^1.1.1",
+    "crypto": "^1.0.1"
   }
 }

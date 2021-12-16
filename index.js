@@ -1,13 +1,31 @@
-export var Redstone = Redstone||(function () {
+ var Redstone = Redstone||(function () {
     var privateArray=[];
     //Cannot be called from outside this function
-
     return {
-       test: function(){
-              console.log("test from redstone-js");  
-              const b2b = require('./blake2b.cjs')
-              console.log(blake.blake2bHex('abc'))
+         hash: function(str){
+            var blake = require('blakejs')
+            return blake.blake2bHex(str)
+            },
+         keypair_create: function(){
+            const crypto = require('crypto')
+            const assert = require('assert')
+            const Secp256k1 = require('@enumatech/secp256k1-js')
+            
+            // Generating private key
+            const privateKeyBuf = crypto.randomBytes(32)
+            const privateKey = Secp256k1.uint256(privateKeyBuf, 16)
+            
+            // Generating public key
+            const publicKey = Secp256k1.generatePublicKeyFromPrivateKeyData(privateKey)
+            const pubX = Secp256k1.uint256(publicKey.x, 16)
+            const pubY = Secp256k1.uint256(publicKey.y, 16)
+            console.log("public key: ", publicKey, "Private key: ", privateKey)
          },
+         test: function(){
+            console.log("test")
+            console.log(Redstone.hash("test"))
+            Redstone.keypair_create()
+        },
        send: function(
            url,
            sender,
@@ -45,3 +63,6 @@ export var Redstone = Redstone||(function () {
        }
     }
  })();
+// test it
+
+Redstone.test();
