@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Redstone javascript",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "test"
   },
@@ -18,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/RedStoneCoin/Redstone-js/issues"
   },
-  "homepage": "https://github.com/RedStoneCoin/Redstone-js#readme"
+  "homepage": "https://github.com/RedStoneCoin/Redstone-js#readme",
+  "dependencies": {
+    "blakejs": "^1.1.1"
+  }
 }

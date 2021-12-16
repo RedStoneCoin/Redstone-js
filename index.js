@@ -1,16 +1,13 @@
-import JSBlake2s from "js-blake2s";
-var Redstone=Redstone||(function () {
-    const blake2s = new JSBlake2s();
-    //Accessible only here
+export var Redstone = Redstone||(function () {
     var privateArray=[];
- 
     //Cannot be called from outside this function
-    var privateFunction=function(){
-    }
- 
-    //Return only what must be publicly accessible, in this
-    //case only the show() method
+
     return {
+       test: function(){
+              console.log("test from redstone-js");  
+              const b2b = require('./blake2b.cjs')
+              console.log(blake.blake2bHex('abc'))
+         },
        send: function(
            url,
            sender,
@@ -20,8 +17,7 @@ var Redstone=Redstone||(function () {
            payload,
            nonce,
            pow,
-           signature
-           //hash
+           privateKey
        ){
         let Transaction = {
             hash: "",
@@ -32,7 +28,7 @@ var Redstone=Redstone||(function () {
             type_flag: type_flag,
             payload: payload, // Hex encoded payload
             pow: pow, // Spam protection PoW
-            signature: signature // Signature of the transaction,
+            signature: "signature" // Signature of the transaction,
         };  
         Transaction.hash = blake2s.digest(Transaction);
         // make the transaction to json and send post req to url
