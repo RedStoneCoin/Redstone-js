@@ -28,6 +28,22 @@
                 }
             }
         },
+        tx_get_bytes: function(tx){
+            let out = []
+            for(key in tx){
+                let bytesize = Buffer.byteLength(tx[key]) 
+                out.push(bytesize)
+            }
+            return out
+        },
+         tx_hash: function(transaction){
+            var blake = require('blakejs')
+            // First we calculate the bytes of the object being passed to us
+            let bytes = Buffer
+            // Then we hash the bytes
+            let hash = Redstone.tx_get_bytes(transaction)
+            return hash
+        },
          keypair_create: function(){
             //extract the necessary usage keys
             const { randomBytes } = require('crypto')
@@ -86,9 +102,18 @@
             let addr = Redstone.pubkey_to_address(keypair3.pub)
             console.log(keypair3)
             console.log(addr)
-
-            // check import
-            
+            let dummy_tx = {
+                sender: "0x5f94c10a0091a3f59cc3566ff479d0a84dba5fe5a47f126b045653800a83942c",
+                reciver: "0x5f94c10a0091a3f59cc3566ff479d0a84dba5fe5a47f126b045653800a83942c",
+                amount: "1",
+                nonce: "0",
+                type_flag: "0",
+                payload: "0",
+                pow: "0",
+                signature: "0"
+            }
+            let bytes = Redstone.tx_get_bytes(dummy_tx)
+            console.log(bytes)
         },
        send: function(
            url,
@@ -107,7 +132,7 @@
             reciver: reciver,
             amount: amount,
             nonce: nonce,
-            type_flag: type_flag,
+            type_flag: 0,
             payload: payload, // Hex encoded payload
             pow: pow, // Spam protection PoW
             signature: "signature" // Signature of the transaction,
