@@ -7,24 +7,68 @@
             return blake.blake2bHex(str)
             },
          keypair_create: function(){
-            const crypto = require('crypto')
-            const assert = require('assert')
-            const Secp256k1 = require('@enumatech/secp256k1-js')
-            
-            // Generating private key
-            const privateKeyBuf = crypto.randomBytes(32)
-            const privateKey = Secp256k1.uint256(privateKeyBuf, 16)
-            
-            // Generating public key
-            const publicKey = Secp256k1.generatePublicKeyFromPrivateKeyData(privateKey)
-            const pubX = Secp256k1.uint256(publicKey.x, 16)
-            const pubY = Secp256k1.uint256(publicKey.y, 16)
-            console.log("public key: ", publicKey, "Private key: ", privateKey)
+            //extract the necessary usage keys
+            const { randomBytes } = require('crypto')
+            const secp256k1 = require('secp256k1')
+            //   if you want to use pure js implementation in node
+             
+            // generate message to sign
+            const msg = randomBytes(32)
+             
+            // generate privKey
+            let privKey
+            do {
+              privKey = randomBytes(32)
+            } while (!secp256k1.privateKeyVerify(privKey))
+             
+            // get the public key in a compressed format
+            const pubKey = secp256k1.publicKeyCreate(privKey)
+            let keypair = {
+                pub: pubKey.toString('hex'),
+                priv: privKey.toString('hex')
+            }
+            // sign the message
+            const sigObj = secp256k1.sign(msg, privKey)
+             
+            // verify the signature
+            return keypair;
+         },
+         pubkey_to_address: function(pubkey){
+            var blake = require('blakejs')
+            pubkey = Buffer.from(pubkey, 'hex')
+            let addr = '0x' + blake.blake2bHex(pubkey)
+            addr = addr.substring(0, 42)
+            return addr;
+         },
+         import_private_key: function(privKey){
+            const { randomBytes } = require('crypto')
+            const secp256k1 = require('secp256k1')
+            // revert privkey from hex to buffer
+            const privKeyBuffer = Buffer.from(privKey, 'hex')
+            const pubKey = secp256k1.publicKeyCreate(privKeyBuffer)
+            let keypair = {
+                pub: pubKey.toString('hex'),
+                priv: privKey
+            }
+            return keypair;
          },
          test: function(){
             console.log("test")
             console.log(Redstone.hash("test"))
-            Redstone.keypair_create()
+            let keypair = Redstone.keypair_create();
+            console.log(keypair)
+            let keypair2 = Redstone.import_private_key(keypair.priv)
+            if (keypair.pub == keypair2.pub){
+                console.log("keypair import success")
+                console.log(keypair2)
+            }
+            let keypair3 = Redstone.import_private_key("5f94c10a0091a3f59cc3566ff479d0a84dba5fe5a47f126b045653800a83942c")
+            let addr = Redstone.pubkey_to_address(keypair3.pub)
+            console.log(keypair3)
+            console.log(addr)
+
+            // check import
+            
         },
        send: function(
            url,
@@ -64,5 +108,4 @@
     }
  })();
 // test it
-
 Redstone.test();
