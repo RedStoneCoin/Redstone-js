@@ -1,20 +1,40 @@
  var Redstone = Redstone||(function () {
     var privateArray=[];
     //Cannot be called from outside this function
+    let Transaction = {
+        hash: "",
+        sender: "sender",
+        reciver: "reciver",
+        amount: "amount",
+        nonce: "nonce",
+        type_flag: "type_flag",
+        payload: "payload", // Hex encoded payload
+        pow: "pow", // Spam protection PoW
+        signature: "signature" // Signature of the transaction,
+    };  
     return {
          hash: function(str){
             var blake = require('blakejs')
             return blake.blake2bHex(str)
             },
+         tx_pow: function(str){
+            var blake = require('blakejs')
+            // random nonce
+            for(nonce_attempt=0;nonce_attempt<1000000000;nonce_attempt++){
+                var nonce_attempt = Math.floor(Math.random() * 100000);
+                var hash = blake.blake2bHex(str+nonce_attempt)
+                if(hash.substring(0,4)=="0000"){
+                    return hash,nonce_attempt
+                }
+            }
+        },
          keypair_create: function(){
             //extract the necessary usage keys
             const { randomBytes } = require('crypto')
             const secp256k1 = require('secp256k1')
             //   if you want to use pure js implementation in node
-             
             // generate message to sign
             const msg = randomBytes(32)
-             
             // generate privKey
             let privKey
             do {
