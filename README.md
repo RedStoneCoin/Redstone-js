@@ -1,4 +1,4 @@
-# Redstone-js *WOP*
+# Redstone-js *WIP*
 Redstone web3 Javascript Library
 
 ## Docs
