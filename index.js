@@ -39,9 +39,11 @@
          tx_hash: function(transaction){
             var blake = require('blakejs')
             // First we calculate the bytes of the object being passed to us
-            let bytes = Buffer
             // Then we hash the bytes
-            let hash = Redstone.tx_get_bytes(transaction)
+            let beforeBuffer = Redstone.tx_get_bytes(transaction)
+            let buffer = Buffer.from(beforeBuffer)
+            let hash = blake.blake2bHex(buffer)
+            // Then we return the hash
             return hash
         },
          keypair_create: function(){
@@ -88,11 +90,16 @@
             }
             return keypair;
          },
+         sign: function(msg, privKey){
+            const { randomBytes } = require('crypto')
+            const secp256k1 = require('secp256k1')
+            const sigObj = secp256k1.ecdsaSign(msg, privKey)
+
+            return sigObj;
+            },
          test: function(){
-            console.log("test")
             console.log(Redstone.hash("test"))
             let keypair = Redstone.keypair_create();
-            console.log(keypair)
             let keypair2 = Redstone.import_private_key(keypair.priv)
             if (keypair.pub == keypair2.pub){
                 console.log("keypair import success")
@@ -100,8 +107,7 @@
             }
             let keypair3 = Redstone.import_private_key("5f94c10a0091a3f59cc3566ff479d0a84dba5fe5a47f126b045653800a83942c")
             let addr = Redstone.pubkey_to_address(keypair3.pub)
-            console.log(keypair3)
-            console.log(addr)
+            console.log("=========================== TRANSACTION TEST ===========================")
             let dummy_tx = {
                 sender: "0x5f94c10a0091a3f59cc3566ff479d0a84dba5fe5a47f126b045653800a83942c",
                 reciver: "0x5f94c10a0091a3f59cc3566ff479d0a84dba5fe5a47f126b045653800a83942c",
@@ -113,7 +119,13 @@
                 signature: "0"
             }
             let bytes = Redstone.tx_get_bytes(dummy_tx)
-            console.log(bytes)
+            console.log("bytes: " + bytes)
+            let hash = Redstone.tx_hash(dummy_tx) // hash done maybe?
+            console.log("hash: " + hash)
+            console.log("=========================== SIGNATURE TEST ===========================")
+            console.log(keypair3.priv)
+            let sign_hash = Redstone.sign(keypair3.priv, hash)
+            console.log("sign_hash: " + sign_hash)
         },
        send: function(
            url,
@@ -137,7 +149,12 @@
             pow: pow, // Spam protection PoW
             signature: "signature" // Signature of the transaction,
         };  
-        Transaction.hash = blake2s.digest(Transaction);
+        let bytes = Redstone.tx_get_bytes(dummy_tx)
+        console.log("bytes: " + bytes)
+        let hash = Redstone.tx_hash(dummy_tx) // hash done maybe?
+        console.log("hash: " + hash)
+        let keypair = Redstone.import_private_key(privateKey)
+        let signature = Redstone.sign(hash, keypair.priv)
         // make the transaction to json and send post req to url
         const options = {
             method: 'POST',
