@@ -202,6 +202,7 @@ var Redstone = Redstone||(function () {
         Transaction.hash = hash
         let signature = Redstone.sign(hash, Buffer.from(privateKey, 'hex'))
         Transaction.signature = signature
+        var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
         let xhr = new XMLHttpRequest();
         xhr.open("POST", url);
         xhr.setRequestHeader("Accept", "application/json");
@@ -210,7 +211,7 @@ var Redstone = Redstone||(function () {
         if (xhr.readyState === 4) {
             console.log(xhr.responseText);
         }};
-        xhr.send(Transaction);
+        xhr.send(JSON.stringify(Transaction));
        }
     }
 })

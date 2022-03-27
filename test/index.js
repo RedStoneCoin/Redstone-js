@@ -2,7 +2,7 @@ const Redstone = require('redstonecrypto-js')
 
 // craete wallet 
 const wallet = Redstone.generateWallet();
-
+console.log(Redstone)
 console.log("=========================== REDSTONE JS WALLET ===========================")
 console.log("= address: " + wallet.address + "                                         ")
 console.log("= private key: " + wallet.privKey + "                                     ")

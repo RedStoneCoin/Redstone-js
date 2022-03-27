@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "redstonecrypto-js": "^0.0.1"
+    "redstonecrypto-js": "^0.0.5"
   }
 }
